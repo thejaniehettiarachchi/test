@@ -53,8 +53,8 @@ for iteration=1:iterations
     newPop = newSols(newFF, movements, best);
     newPop = calcObjFunc(newPop, N, distMat);
     newFF = selectFFs(newPop, nFF);
-    disp(best.')
-    solutions(iteration) = best(1,N+1)          
+    disp(best.');
+    solutions(iteration) = best(1,N+1);            
 end
 % figure
 % plot (solutions);
@@ -146,7 +146,7 @@ disp (solutions);
         SortedFF = sortrows(FFs,(N+1));
         FFs;
         SortedFF;
-        best = SortedFF(1,:);
+        best = SortedFF(1,:)
     
 
 

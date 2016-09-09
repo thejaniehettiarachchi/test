@@ -1,7 +1,7 @@
 function fa_tsp()
 %****************inputs*******************
 
-nFF = 25; %number of fireflies
+nFF = 50; %number of fireflies
 movements = 20; %number of times a firefly moves
 global gamma;
 gamma = 0.01; %light absorption coeffient
@@ -9,13 +9,9 @@ iterations = 400; %number of times the FFs will evolve
 file  = 'eil51.tsp'; %file name
 
 %*************** Initialize variables ****************
-xValues = 0; 
-yValues = 0;
-N = 0;
-distMat = 0;
-initFF = 0;
+
+global best;
 best = 0;
-solutions = 0;
 
 
 
@@ -54,26 +50,25 @@ for iteration=1:iterations
     newPop = calcObjFunc(newPop, N, distMat);
     newFF = selectFFs(newPop, nFF);
     disp(best.')
-    solutions(iteration) = best(1,N+1)          
+    solutions(iteration) = best(1,N+1);        
 end
-% figure
-% plot (solutions);
-disp (solutions);
-% 
-% disp('route');
-% disp(best(1:N));
-% disp('distance');
-% disp(best(1,N+1));
-% disp('difference from optimum solution');
-% disp(best(1,N+1) - 426)
+figure
+plot (solutions);
 
-% function setGlobalG(val)
-% global gamma
-% gamma = val;
-%     
-% function G = getGlobalG
-% global gamma
-% r = gamma;
+disp('route');
+disp(best(1:N));
+disp('distance');
+disp(best(1,N+1));
+disp('difference from optimum solution');
+disp(best(1,N+1) - 426)
+
+function setGlobalBest(val)
+global best;
+best = val;
+    
+function B = getGlobalBest
+global best;
+B = best;
 
 
 % N
@@ -144,10 +139,8 @@ disp (solutions);
     function [SortedFF, best] = sort(FFs) 
         N = size(FFs.', 1)-1;
         SortedFF = sortrows(FFs,(N+1));
-        FFs;
-        SortedFF;
         best = SortedFF(1,:);
-    
+        setGlobalBest(best);
 
 
 %********** Calculate Distance between 2 Fireflies (solutions) ****************

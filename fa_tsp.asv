@@ -14,8 +14,10 @@ yValues = 0;
 N = 0;
 distMat = 0;
 initFF = 0;
-best = 0;
 solutions = 0;
+
+global best;
+best = 0;
 
 
 
@@ -53,11 +55,11 @@ for iteration=1:iterations
     newPop = newSols(newFF, movements, best);
     newPop = calcObjFunc(newPop, N, distMat);
     newFF = selectFFs(newPop, nFF);
-    disp(best.');
-    solutions(iteration) = best(1,N+1);            
+    disp(best.')
+    solutions(iteration) = best(1,N+1)          
 end
-% figure
-% plot (solutions);
+figure
+plot (solutions);
 disp (solutions);
 % 
 % disp('route');
@@ -67,13 +69,13 @@ disp (solutions);
 % disp('difference from optimum solution');
 % disp(best(1,N+1) - 426)
 
-% function setGlobalG(val)
-% global gamma
-% gamma = val;
-%     
-% function G = getGlobalG
-% global gamma
-% r = gamma;
+function setGlobalBest(val)
+global best
+best = val;
+    
+function B = getGlobalBest
+global best
+B = best;
 
 
 % N
@@ -144,10 +146,8 @@ disp (solutions);
     function [SortedFF, best] = sort(FFs) 
         N = size(FFs.', 1)-1;
         SortedFF = sortrows(FFs,(N+1));
-        FFs;
-        SortedFF;
-        best = SortedFF(1,:)
-    
+        best = SortedFF(1,:);
+        setGlobalBest(best);
 
 
 %********** Calculate Distance between 2 Fireflies (solutions) ****************

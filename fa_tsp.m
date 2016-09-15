@@ -5,11 +5,12 @@ global N;
 global best;
 global gamma;
 
-nFF = 50; %number of fireflies
-movements = 20; %number of times a firefly moves
+nFF = 100; %number of fireflies
+movements = 50; %number of times a firefly moves
 gamma = 0.01; %light absorption coeffient
-iterations = 400; %number of times the FFs will evolve
-file  = 'eil51.tsp'; %file name
+iterations = 500; %number of times the FFs will evolve
+file  = 'a280.tsp'; %file name
+minDist = 2579;
 
 
 %**********     Read tsp file      **************
@@ -46,7 +47,7 @@ for iteration=1:iterations
     newPop = newSols(newFF, movements, best);
     newPop = calcObjFunc(newPop, N, distMat);
     newFF = selectFFs(newPop, nFF);
-    disp(best.')
+    %disp(best.')
     solutions(iteration) = best(1,N+1);        
 end
 
@@ -69,7 +70,7 @@ disp(best(1:N));
 disp('distance');
 disp(best(1,N+1));
 disp('difference from optimum solution');
-disp(best(1,N+1) - 426)
+disp(best(1,N+1) - minDist)
 
 
 

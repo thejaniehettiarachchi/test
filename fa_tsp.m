@@ -1,18 +1,15 @@
 function fa_tsp()
 %****************inputs*******************
+global nFF;
+global N;
+global best;
+global gamma;
 
 nFF = 50; %number of fireflies
 movements = 20; %number of times a firefly moves
-global gamma;
 gamma = 0.01; %light absorption coeffient
 iterations = 400; %number of times the FFs will evolve
 file  = 'eil51.tsp'; %file name
-
-%*************** Initialize variables ****************
-
-global best;
-best = 0;
-
 
 
 %**********     Read tsp file      **************
@@ -52,8 +49,20 @@ for iteration=1:iterations
     disp(best.')
     solutions(iteration) = best(1,N+1);        
 end
+
+
+[nodes1, nodes2] = getGraphNodes(best);
+
 figure
 plot (solutions);
+
+figure
+G = graph(nodes1,nodes2);
+p = plot(G);
+p.NodeColor = 'r';
+p.XData = xValues;
+p.YData = yValues;
+% plot(G,'XData',xValues,'YData',xValues,'EdgeLabel');
 
 disp('route');
 disp(best(1:N));
@@ -62,13 +71,14 @@ disp(best(1,N+1));
 disp('difference from optimum solution');
 disp(best(1,N+1) - 426)
 
+
+
+
 function setGlobalBest(val)
 global best;
 best = val;
     
-function B = getGlobalBest
-global best;
-B = best;
+
 
 
 % N
@@ -88,7 +98,7 @@ B = best;
 
 %********** Create Distance Matrix ****************
     function distMat = disMat(distMat, xValues, yValues)
-        N = size(xValues, 1);
+        global N;
         for i = 1:N
             for j = i:N
                 %enter distance between i and j into distMat
@@ -137,7 +147,7 @@ B = best;
 %********** Sort ****************
 
     function [SortedFF, best] = sort(FFs) 
-        N = size(FFs.', 1)-1;
+        global N;
         SortedFF = sortrows(FFs,(N+1));
         best = SortedFF(1,:);
         setGlobalBest(best);
@@ -146,7 +156,7 @@ B = best;
 %********** Calculate Distance between 2 Fireflies (solutions) ****************
 
     function arcs = calDistSol(FF1, FF2)
-         N = size(FF1.', 1)-1;
+        global N;
         arcs = 0;
         for i = 1:(N-1)
             temp1 = FF1(i);
@@ -167,7 +177,7 @@ B = best;
 %********** Calculate Brightness ****************
 
     function bri = brightness(FF)
-        N = size(FF.', 1)-1;
+        global N;
         d  = FF(1,N+1);
         bri = 1/d;
     
@@ -204,7 +214,7 @@ B = best;
 %********** Inverse Mutation ****************
 
     function FF = invMutation(FF, length)
-        N = size(FF.', 1)-1;
+        global N;
         startAt = randi(N, 1);
         temp = zeros(1,length);
         for i = 1:length
@@ -237,6 +247,7 @@ B = best;
 %********** New Solutions ****************
 
     function newFFs = newSols(FFset, movements, best)
+        global N;
         nFF = size(FFset, 1);
         N = size(FFset.', 1)-1;
         newFFs = zeros((nFF * movements)+1, N+1);
@@ -260,5 +271,21 @@ B = best;
             end
         end
         newFFs((nFF * movements)+1, :) = best;
-    
+        
+    function [nodes1, nodes2] = getGraphNodes(best)
+        global N;
+        nodes2 = zeros(N,1);
+        for i = 1:(N-1)
+            nodes2(i) = best(i+1);
+        end
+        nodes2(N) = best(1);
+        nodes1 = best(1:N);
 
+           
+           
+           
+           
+           
+           
+           
+           

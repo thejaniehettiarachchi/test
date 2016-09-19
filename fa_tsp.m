@@ -5,12 +5,12 @@ global N;
 global best;
 global gamma;
 
-nFF = 100; %number of fireflies
-movements = 50; %number of times a firefly moves
+nFF = 50; %number of fireflies
+movements = 30; %number of times a firefly moves
 gamma = 0.01; %light absorption coeffient
-iterations = 500; %number of times the FFs will evolve
-file  = 'a280.tsp'; %file name
-minDist = 2579;
+iterations = 200; %number of times the FFs will evolve
+file  = 'eil51.tsp'; %file name
+minDist = 426;
 
 
 %**********     Read tsp file      **************
@@ -37,7 +37,7 @@ yValues = datamat(:,3); %y coordinates
 distMat = zeros(N,N);
 solutions = zeros(iterations, 1);
 distMat = disMat(distMat, xValues, yValues);
-initFF = init(nFF, N);
+initFF = init(nFF, N)
 newFF = calcObjFunc(initFF, N, distMat);
 [newFF, best] = sort(newFF);
 
@@ -119,9 +119,10 @@ best = val;
 
 %********** Create Initial Population ****************
     function FFs = init(FF, nCity) %nFF = No. of FF, N = No. of cities
-        FFs = zeros(FF,nCity);
+        FFs = zeros(FF,(nCity+2));
         for i= 1:FF
-            FFs(i,:) = (randperm(nCity));
+            FFs(i,1:nCity) = (randperm(nCity));
+            FFs(i,(nCity+2)) = (rand(10));
         end
     
 
@@ -250,8 +251,7 @@ best = val;
     function newFFs = newSols(FFset, movements, best)
         global N;
         nFF = size(FFset, 1);
-        N = size(FFset.', 1)-1;
-        newFFs = zeros((nFF * movements)+1, N+1);
+        newFFs = zeros((nFF * movements)+1, N+2);
         for i = 1:nFF
             FF = FFset(i, :);
             attrFF = getAttrFF (FF, FFset);

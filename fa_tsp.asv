@@ -3,7 +3,6 @@ function fa_tsp()
 global nFF;
 global N;
 global best;
-global gammaBest;
 global alpha;
 global delta;
 
@@ -41,7 +40,7 @@ yValues = datamat(:,3); %y coordinates
 distMat = zeros(N,N);
 solutions = zeros(iterations, 1);
 distMat = disMat(distMat, xValues, yValues);
-initFF = init(nFF, N)
+initFF = init(nFF, N);
 newFF = calcObjFunc(initFF, N, distMat);
 [newFF, best] = sort(newFF);
 
@@ -198,8 +197,9 @@ gammaBest = val;
 %********** Calculate Attractiveness ****************
 
     function attr = calAttr(FF1, FF2)
-        global gamma; %TODO
+        global N; %TODO
         r = calDistSol(FF1, FF2);
+        gamma = FF1(1, N+2);
         attr0 = brightness(FF2);
         pow = -(gamma * r *r);
         attr = attr0 * exp(pow);
@@ -243,6 +243,28 @@ gammaBest = val;
             else
                 to = N;
             end
+            
+            
+ %********** Inverse Mutation ****************
+
+    function FF = invMutation(FF, length)
+        global N;
+        startAt = randi(N, 1);
+        temp = zeros(1,length);
+        for i = 1:length
+            if mod((startAt + (i-1)), N) ~= 0
+                to  = mod((startAt + (i-1)), N);
+            else
+                to = N;
+            end
+            temp(i) = FF(to);
+        end
+        for i = 1:length
+            if mod((startAt + (i-1)), N) ~= 0
+                to  = mod((startAt + (i-1)), N);
+            else
+                to = N;
+            end
             FF(to) = temp(length -(i-1));
         end
     
@@ -258,7 +280,7 @@ gammaBest = val;
 
 %********** New Solutions ****************
 
-    function newFFs = newSols(FFset, movements, best)
+    function newFFs = newSols(FFset, movements, best) %TODO
         global N;
         nFF = size(FFset, 1);
         newFFs = zeros((nFF * movements)+1, N+2);

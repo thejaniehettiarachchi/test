@@ -3,7 +3,6 @@ function fa_tsp()
 global nFF;
 global N;
 global best;
-global gammaBest;
 global alpha;
 global delta;
 
@@ -41,7 +40,7 @@ yValues = datamat(:,3); %y coordinates
 distMat = zeros(N,N);
 solutions = zeros(iterations, 1);
 distMat = disMat(distMat, xValues, yValues);
-initFF = init(nFF, N)
+initFF = init(nFF, N);
 newFF = calcObjFunc(initFF, N, distMat);
 [newFF, best] = sort(newFF);
 
@@ -198,8 +197,9 @@ gammaBest = val;
 %********** Calculate Attractiveness ****************
 
     function attr = calAttr(FF1, FF2)
-        global gamma; %TODO
+        global N; 
         r = calDistSol(FF1, FF2);
+        gamma = FF1(1, N+2);
         attr0 = brightness(FF2);
         pow = -(gamma * r *r);
         attr = attr0 * exp(pow);

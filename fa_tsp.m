@@ -3,11 +3,15 @@ function fa_tsp()
 global nFF;
 global N;
 global best;
-global gamma;
+global gammaBest;
+global alpha;
+global delta;
 
 nFF = 50; %number of fireflies
 movements = 30; %number of times a firefly moves
-gamma = 10; %light absorption coeffient
+%gamma = 10; %light absorption coeffient
+alpha = 0;
+delta = 0;
 iterations = 200; %number of times the FFs will evolve
 file  = 'eil51.tsp'; %file name
 minDist = 426;
@@ -80,8 +84,8 @@ global best;
 best = val;
 
 function setGlobalGamma(val)
-global gamma;
-gamma = val;
+global gammaBest;
+gammaBest = val;
     
 
 
@@ -194,7 +198,7 @@ gamma = val;
 %********** Calculate Attractiveness ****************
 
     function attr = calAttr(FF1, FF2)
-        global gamma;
+        global gamma; %TODO
         r = calDistSol(FF1, FF2);
         attr0 = brightness(FF2);
         pow = -(gamma * r *r);
@@ -254,7 +258,7 @@ gamma = val;
 
 %********** New Solutions ****************
 
-    function newFFs = newSols(FFset, movements, best)
+    function newFFs = newSols(FFset, movements, best) %TODO
         global N;
         nFF = size(FFset, 1);
         newFFs = zeros((nFF * movements)+1, N+2);

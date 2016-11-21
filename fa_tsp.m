@@ -219,7 +219,7 @@ gammaBest = val;
     function attrFF = getAttrFF (FF, FFset)
         
         
-        ob = brightness(FF2);
+%        ob = brightness(FF2);
         
         nFF = size(FFset, 1);
         attrFF = -1;
@@ -291,6 +291,8 @@ gammaBest = val;
                 for j = 1:movements
                     move = randi([2,dist], 1);
                     newFFs(movements*(i-1) + j,:) = invMutation(FF, move);
+                    %TODO newFFs(movements*(i-1) + j, "gamma") =
+                    %newGamma(FF, attrFF);
                 end
             end
         end

@@ -1,3 +1,4 @@
+
 function fa_tsp()
 %****************inputs*******************
 global nFF;
@@ -60,12 +61,12 @@ end
 figure
 plot (solutions);
 
-figure
-G = graph(nodes1,nodes2);
-p = plot(G);
-p.NodeColor = 'r';
-p.XData = xValues;
-p.YData = yValues;
+% figure
+%G = graph(nodes1,nodes2);
+% p = plot(G);
+% p.NodeColor = 'r';
+% p.XData = xValues;
+% p.YData = yValues;
 % plot(G,'XData',xValues,'YData',xValues,'EdgeLabel');
 
 disp('route');
@@ -191,6 +192,14 @@ gammaBest = val;
         global N;
         d  = FF(1,N+1);
         bri = 1/d;
+        
+        
+%********** Calculate Objective function ****************
+
+    function ob = obj(FF)
+        global N;
+        d  = FF(1,N+1);
+        ob = 1/d;
     
 
 
@@ -198,9 +207,9 @@ gammaBest = val;
 
     function attr = calAttr(FF1, FF2)
         global N; 
+        attr0 = 1;
         r = calDistSol(FF1, FF2);
         gamma = FF1(1, N+2);
-        attr0 = brightness(FF2);
         pow = -(gamma * r *r);
         attr = attr0 * exp(pow);
     
@@ -208,6 +217,10 @@ gammaBest = val;
 %********** Find More Attractive Firefly ****************
 
     function attrFF = getAttrFF (FF, FFset)
+        
+        
+        ob = brightness(FF2);
+        
         nFF = size(FFset, 1);
         attrFF = -1;
         FFs = (randperm(nFF));

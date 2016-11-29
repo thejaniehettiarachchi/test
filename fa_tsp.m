@@ -1,18 +1,20 @@
 
 function fa_tsp()
 %****************inputs*******************
+clearvars -global;
 global nFF;
 global N;
 global best;
 global alpha;
 global delta;
+global gamma;
 
 nFF = 50; %number of fireflies
 movements = 30; %number of times a firefly moves
 %gamma = 10; %light absorption coeffient
 alpha = 0;
 delta = 0;
-iterations = 200; %number of times the FFs will evolve
+iterations = 300; %number of times the FFs will evolve
 file  = 'eil51.tsp'; %file name
 minDist = 426;
 
@@ -43,7 +45,7 @@ solutions = zeros(iterations, 1);
 distMat = disMat(distMat, xValues, yValues);
 initFF = init(nFF, N);
 newFF = calcObjFunc(initFF, N, distMat);
-[newFF, best] = sort(newFF);
+newFF = sort(newFF);
 
 %**********     evolve      **************      
 for iteration=1:iterations
@@ -52,7 +54,8 @@ for iteration=1:iterations
     newPop = calcObjFunc(newPop, N, distMat);
     newFF = selectFFs(newPop, nFF);
     disp(best.')
-    solutions(iteration) = best(1,N+1);        
+    solutions(iteration) = best(1,N+1);   
+    gammaSol(iteration) = best(1,N+2);   
 end
 
 
@@ -60,6 +63,9 @@ end
 
 figure
 plot (solutions);
+
+figure
+plot (gammaSol);
 
 % figure
 %G = graph(nodes1,nodes2);
@@ -75,6 +81,8 @@ disp('distance');
 disp(best(1,N+1));
 disp('difference from optimum solution');
 disp(best(1,N+1) - minDist)
+disp('gamma value :');
+disp(gamma);
 
 
 
@@ -84,8 +92,8 @@ global best;
 best = val;
 
 function setGlobalGamma(val)
-global gammaBest;
-gammaBest = val;
+global gamma;
+gamma = val;
     
 
 
@@ -130,7 +138,7 @@ gammaBest = val;
         FFs = zeros(FF,(nCity+2));
         for i= 1:FF
             FFs(i,1:nCity) = (randperm(nCity));
-            FFs(i,(nCity+2)) = (rand()*10);
+            FFs(i,(nCity+2)) = (rand());
         end
     
 
@@ -156,13 +164,16 @@ gammaBest = val;
 
 %********** Sort ****************
 
-    function [SortedFF, best] = sort(FFs) 
+    function SortedFF = sort(FFs) 
         global N;
+        global best;
         SortedFF = sortrows(FFs,(N+1));
-        best = SortedFF(1,:);
+        localBest = SortedFF(1,:);
         gamma = SortedFF(1,N+2);
-        setGlobalBest(best);
-        setGlobalGamma(gamma);
+        if  isempty(best) || (localBest(1,N+1) < best(1,N+1))
+            setGlobalBest(localBest);
+            setGlobalGamma(gamma);
+        end;
 
 
 %********** Calculate Distance between 2 Fireflies (solutions) ****************
@@ -282,6 +293,9 @@ gammaBest = val;
                 for j = 1:movements
                     move = randi([2,N],1);
                     newFFs(movements*(i-1) + j,:) = invMutation(FF, move);
+                    FF
+                    attrFF
+                    newFFs(movements*(i-1) + j, N+2) = newGamma(FF, attrFF);
                 end
             else
                 dist = calDistSol(FF, attrFF);
@@ -291,8 +305,7 @@ gammaBest = val;
                 for j = 1:movements
                     move = randi([2,dist], 1);
                     newFFs(movements*(i-1) + j,:) = invMutation(FF, move);
-                    %TODO newFFs(movements*(i-1) + j, "gamma") =
-                    %newGamma(FF, attrFF);
+                    newFFs(movements*(i-1) + j, N+2) = newGamma(FF, attrFF);
                 end
             end
         end
@@ -306,6 +319,17 @@ gammaBest = val;
         end
         nodes2(N) = best(1);
         nodes1 = best(1:N);
+        
+        function g = newGamma(FF1, FF2)
+        global gamma
+        global N;
+        attr0 = 1;
+        r = calDistSol(FF1, FF2);
+        g = FF1( 1, N+2);
+        pow = -(gamma * r *r);
+        g = abs(g - attr0 * exp(pow)*0.1);
+
+            
 
            
            

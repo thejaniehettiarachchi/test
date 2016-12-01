@@ -61,20 +61,6 @@ end
 
 [nodes1, nodes2] = getGraphNodes(best);
 
-figure
-plot (solutions);
-
-figure
-plot (gammaSol);
-
-% figure
-%G = graph(nodes1,nodes2);
-% p = plot(G);
-% p.NodeColor = 'r';
-% p.XData = xValues;
-% p.YData = yValues;
-% plot(G,'XData',xValues,'YData',xValues,'EdgeLabel');
-
 disp('route');
 disp(best(1:N));
 disp('distance');
@@ -83,6 +69,21 @@ disp('difference from optimum solution');
 disp(best(1,N+1) - minDist)
 disp('gamma value :');
 disp(gamma);
+
+figure
+plot (solutions);
+
+figure
+plot (gammaSol);
+
+figure
+G = graph(nodes1,nodes2);
+p = plot(G);
+p.NodeColor = 'r';
+p.XData = xValues;
+p.YData = yValues;
+plot(G,'XData',xValues,'YData',xValues,'EdgeLabel');
+
 
 
 
@@ -218,7 +219,7 @@ gamma = val;
 
     function attr = calAttr(FF1, FF2)
         global N; 
-        attr0 = 1;
+        attr0 = brightness(FF2);
         r = calDistSol(FF1, FF2);
         gamma = FF1(1, N+2);
         pow = -(gamma * r *r);
@@ -293,8 +294,6 @@ gamma = val;
                 for j = 1:movements
                     move = randi([2,N],1);
                     newFFs(movements*(i-1) + j,:) = invMutation(FF, move);
-                    FF
-                    attrFF
                     newFFs(movements*(i-1) + j, N+2) = newGamma(FF, attrFF);
                 end
             else
@@ -324,10 +323,19 @@ gamma = val;
         global gamma
         global N;
         attr0 = 1;
-        r = calDistSol(FF1, FF2);
-        g = FF1( 1, N+2);
-        pow = -(gamma * r *r);
-        g = abs(g - attr0 * exp(pow)*0.1);
+        if FF2 == -1
+            g = FF1(1,N+2) + (rand()*0.1 - 0.05);
+        else
+            gamma1 = FF1(1,N+2);
+            gamma2 = FF2(1, N+2);
+            r = gamma1 - gamma2;
+            pow = -(gamma * r *r);
+            if gamma1 < gamma2
+                g = abs(gamma1 + attr0 * exp(pow)*0.1);
+            else
+                g = abs(gamma1 - attr0 * exp(pow)*0.1);
+            end;  
+        end;
 
             
 

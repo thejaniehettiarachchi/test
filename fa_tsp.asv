@@ -1,18 +1,20 @@
 
 function fa_tsp()
 %****************inputs*******************
+clearvars -global;
 global nFF;
 global N;
 global best;
 global alpha;
 global delta;
+global gamma;
 
 nFF = 50; %number of fireflies
 movements = 30; %number of times a firefly moves
 %gamma = 10; %light absorption coeffient
 alpha = 0;
 delta = 0;
-iterations = 500; %number of times the FFs will evolve
+iterations = 300; %number of times the FFs will evolve
 file  = 'eil51.tsp'; %file name
 minDist = 426;
 
@@ -42,7 +44,6 @@ distMat = zeros(N,N);
 solutions = zeros(iterations, 1);
 distMat = disMat(distMat, xValues, yValues);
 initFF = init(nFF, N);
-newFF = sort(initFF);    % to initiallize gamma
 newFF = calcObjFunc(initFF, N, distMat);
 newFF = sort(newFF);
 
@@ -66,13 +67,13 @@ plot (solutions);
 figure
 plot (gammaSol);
 
-% figure
-%G = graph(nodes1,nodes2);
-% p = plot(G);
-% p.NodeColor = 'r';
-% p.XData = xValues;
-% p.YData = yValues;
-% plot(G,'XData',xValues,'YData',xValues,'EdgeLabel');
+figure
+G = graph(nodes1,nodes2);
+p = plot(G);
+p.NodeColor = 'r';
+p.XData = xValues;
+p.YData = yValues;
+plot(G,'XData',xValues,'YData',xValues,'EdgeLabel');
 
 disp('route');
 disp(best(1:N));
@@ -80,6 +81,8 @@ disp('distance');
 disp(best(1,N+1));
 disp('difference from optimum solution');
 disp(best(1,N+1) - minDist)
+disp('gamma value :');
+disp(gamma);
 
 
 
@@ -167,10 +170,10 @@ gamma = val;
         SortedFF = sortrows(FFs,(N+1));
         localBest = SortedFF(1,:);
         gamma = SortedFF(1,N+2);
-        if (localBest(1,N+1) < best(1,N+1))
-            setGlobalBest(best);
+        if  isempty(best) || (localBest(1,N+1) < best(1,N+1))
+            setGlobalBest(localBest);
+            setGlobalGamma(gamma);
         end;
-        setGlobalGamma(gamma);
 
 
 %********** Calculate Distance between 2 Fireflies (solutions) ****************
@@ -321,10 +324,13 @@ gamma = val;
         global gamma
         global N;
         attr0 = 1;
-        r = calDistSol(FF1, FF2);
+        gamma1 = FF1(1,N+2);
+        gamma2 = FF2(1, N+2);
+        r = gamma1 - gamma2;
+        
         g = FF1( 1, N+2);
         pow = -(gamma * r *r);
-        g = abs(g - attr0 * exp(pow));
+        g = abs(g - attr0 * exp(pow)*0.1);
 
             
 

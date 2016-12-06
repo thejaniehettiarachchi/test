@@ -1,25 +1,64 @@
 function fa_tsp_chk()
     N = 51;
-    solArray = zeros(20,N+2);
-    timeArray = zeros(20);
-    for run = 1:20
-        [optSol,time, diff, error] = fa_tsp();
+    runs = 5;
+    solArray = zeros(runs,N+2);
+    timeArray = zeros(runs,1);
+    errorArray = zeros(runs,1);
+    diffArray = zeros(runs,1);
+    for run = 1:runs
+        [optSol,time, diff, error, xValues, yValues] = fa_tsp();
+        if error > 2
+            [optSol,time, diff, error] = fa_tsp();
+        end
         solArray(run,:) = optSol;
-        timeArray(run) = time;
+        timeArray(run,1) = time;
+        errorArray(run,1) = error;
+        diffArray(run,1) = diff;
     end
     sortedSol = sortrows(optSol,(N+1));
     best = sortedSol(1,:);
-    avgTime = mean(timeArray)
+    avgTime = mean(timeArray(:,1))
     avgDist = mean(optSol(:,N+1))
     bestDist = best(N+1)
     bestGamma = best(N+2)
+    stdDeviation = std(solArray(:,N+1))
     
     figure
-    bar(time)
+    bar(timeArray);
+    title('Time distribution');
+    xlabel('run');
+    ylabel('time taken(s)');
     
     figure
-    bar(
-function [optSol,time, diff, error] = fa_tsp()
+    bar(diffArray(:));
+    title('Distribution of Error');
+    xlabel('run');
+    ylabel('Error');
+    
+    figure
+    bar(errorArray(:));
+    title('Distribution of Error percentage');
+    xlabel('run');
+    ylabel('Error Percentage (%)');
+    
+    figure
+    
+    bar(solArray(:, N+1));
+    title('Distribution of Tour Length');
+    xlabel('run');
+    ylabel('Tour Length');
+    
+    figure
+    [nodes1, nodes2] = getGraphNodes(best);
+    G = graph(nodes1,nodes2);
+    p = plot(G);
+    p.NodeColor = 'r';
+    p.XData = xValues;
+    p.YData = yValues;
+    title('Best route found'); 
+
+
+function [optSol,time, diff, error, xValues, yValues] = fa_tsp()
 %****************inputs*******************
 tic
 clearvars -global;
@@ -35,7 +74,7 @@ movements = 20; %number of times a firefly moves
 %gamma = 10; %light absorption coeffient
 alpha = 0;
 delta = 0;
-iterations = 2000; %number of times the FFs will evolve
+iterations = 15; %number of times the FFs will evolve
 file  = 'eil51.tsp'; %file name
 minDist = 426;
 
@@ -98,9 +137,15 @@ disp((best(1,N+1)- minDist)/minDist*100);
 
 figure
 plot (solutions);
+    title('Change in Tour Length');
+    xlabel('Itteration');
+    ylabel('Tour Length');
 
 figure
 plot (gammaSol);
+    title('Change in Gamma');
+    xlabel('Itteration');
+    ylabel('Gamma');
 
 figure
 G = graph(nodes1,nodes2);
@@ -108,11 +153,7 @@ p = plot(G);
 p.NodeColor = 'r';
 p.XData = xValues;
 p.YData = yValues;
-plot(G,'XData',xValues,'YData',xValues);
-
-
-
-
+    title('Best route found'); 
 
 function setGlobalBest(val)
 global best;

@@ -85,7 +85,6 @@ p = plot(G);
 p.NodeColor = 'r';
 p.XData = xValues;
 p.YData = yValues;
-plot(G,'XData',xValues,'YData',xValues);
  figure
 nodess = bar(nodes1)
 

@@ -14,7 +14,7 @@ movements = 30; %number of times a firefly moves
 %gamma = 10; %light absorption coeffient
 alpha = 0;
 delta = 0;
-iterations = 300; %number of times the FFs will evolve
+iterations = 400; %number of times the FFs will evolve
 file  = 'eil51.tsp'; %file name
 minDist = 426;
 
@@ -61,6 +61,15 @@ end
 
 [nodes1, nodes2] = getGraphNodes(best);
 
+disp('route');
+disp(best(1:N));
+disp('distance');
+disp(best(1,N+1));
+disp('difference from optimum solution');
+disp(best(1,N+1) - minDist)
+disp('gamma value :');
+disp(gamma);
+
 figure
 plot (solutions);
 
@@ -75,14 +84,6 @@ p.XData = xValues;
 p.YData = yValues;
 plot(G,'XData',xValues,'YData',xValues,'EdgeLabel');
 
-disp('route');
-disp(best(1:N));
-disp('distance');
-disp(best(1,N+1));
-disp('difference from optimum solution');
-disp(best(1,N+1) - minDist)
-disp('gamma value :');
-disp(gamma);
 
 
 
@@ -138,7 +139,9 @@ gamma = val;
         FFs = zeros(FF,(nCity+2));
         for i= 1:FF
             FFs(i,1:nCity) = (randperm(nCity));
-            FFs(i,(nCity+2)) = (rand());
+            while (FFs(i,(nCity+2)) <= 0 || FFs(i,(nCity+2))> 1)
+                FFs(i,(nCity+2)) = (rand());
+            end
         end
     
 
@@ -218,7 +221,7 @@ gamma = val;
 
     function attr = calAttr(FF1, FF2)
         global N; 
-        attr0 = 1;
+        attr0 = brightness(FF2);
         r = calDistSol(FF1, FF2);
         gamma = FF1(1, N+2);
         pow = -(gamma * r *r);
@@ -229,16 +232,13 @@ gamma = val;
 
     function attrFF = getAttrFF (FF, FFset)
         
-        
-%        ob = brightness(FF2);
-        
         nFF = size(FFset, 1);
         attrFF = -1;
         FFs = (randperm(nFF));
         for i= 1:nFF
             temp = FFset(FFs(i),:);
-%             disp(brightness(FF));
-%             disp(calAttr(FF, temp));
+            disp(brightness(FF));
+            disp(calAttr(FF, temp));
             if brightness(FF) < calAttr(FF, temp)
                 attrFF = temp;
                 break;
@@ -292,9 +292,8 @@ gamma = val;
             if attrFF == -1
                 for j = 1:movements
                     move = randi([2,N],1);
+%                     newFFs(movements*(i-1) + j,1:N) = randperm(N);
                     newFFs(movements*(i-1) + j,:) = invMutation(FF, move);
-                    FF
-                    attrFF
                     newFFs(movements*(i-1) + j, N+2) = newGamma(FF, attrFF);
                 end
             else
@@ -324,21 +323,22 @@ gamma = val;
         global gamma
         global N;
         attr0 = 1;
-        gamma1 = FF1(1,N+2);
-        gamma2 = FF2(1, N+2);
-        r = gamma1 - gamma2;
-        
-        g = FF1( 1, N+2);
-        pow = -(gamma * r *r);
-        g = abs(g - attr0 * exp(pow)*0.1);
-
-            
-
-           
-           
-           
-           
-           
-           
-           
-           
+        if FF2 == -1
+            g = FF1(1,N+2) + (rand()*0.1 - 0.05);
+        else
+            gamma1 = FF1(1,N+2);
+            gamma2 = FF2(1, N+2);
+            r = gamma1 - gamma2;
+            pow = -(gamma * r *r);
+            if gamma1 < gamma2
+                g = abs(gamma1 + attr0 * exp(pow)*0.01);
+            else
+                g = abs(gamma1 - attr0 * exp(pow)*0.01);
+            end; 
+        end; 
+        if g <= 0
+            g = 0 + rand()*0.01;
+        elseif g > 1
+            g = 1;
+        end
+% g = 0.01;

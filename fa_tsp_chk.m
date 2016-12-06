@@ -1,5 +1,25 @@
-
-function fa_tsp()
+function fa_tsp_chk()
+    N = 51;
+    solArray = zeros(20,N+2);
+    timeArray = zeros(20);
+    for run = 1:20
+        [optSol,time, diff, error] = fa_tsp();
+        solArray(run,:) = optSol;
+        timeArray(run) = time;
+    end
+    sortedSol = sortrows(optSol,(N+1));
+    best = sortedSol(1,:);
+    avgTime = mean(timeArray)
+    avgDist = mean(optSol(:,N+1))
+    bestDist = best(N+1)
+    bestGamma = best(N+2)
+    
+    figure
+    bar(time)
+    
+    figure
+    bar(
+function [optSol,time, diff, error] = fa_tsp()
 %****************inputs*******************
 tic
 clearvars -global;
@@ -11,13 +31,13 @@ global delta;
 global gamma;
 
 nFF = 50; %number of fireflies
-movements = 30; %number of times a firefly moves
+movements = 20; %number of times a firefly moves
 %gamma = 10; %light absorption coeffient
 alpha = 0;
 delta = 0;
-iterations = 10; %number of times the FFs will evolve
-file  = 'pr76.tsp'; %file name
-minDist = 108159;
+iterations = 2000; %number of times the FFs will evolve
+file  = 'eil51.tsp'; %file name
+minDist = 426;
 
 
 %**********     Read tsp file      **************
@@ -58,8 +78,11 @@ for iteration=1:iterations
     solutions(iteration) = best(1,N+1);   
     gammaSol(iteration) = best(1,N+2);   
 end
-
 time = toc
+optSol = best;
+diff = best(1,N+1) - minDist;
+error = (best(1,N+1)- minDist)/minDist*100;
+
 [nodes1, nodes2] = getGraphNodes(best);
 
 disp('route');
@@ -86,8 +109,7 @@ p.NodeColor = 'r';
 p.XData = xValues;
 p.YData = yValues;
 plot(G,'XData',xValues,'YData',xValues);
- figure
-nodess = bar(nodes1)
+
 
 
 

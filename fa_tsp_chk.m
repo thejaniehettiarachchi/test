@@ -1,6 +1,6 @@
 function fa_tsp_chk()
-    N = 51;
-    runs = 5;
+    N = 76;
+    runs = 20;
     solArray = zeros(runs,N+2);
     timeArray = zeros(runs,1);
     errorArray = zeros(runs,1);
@@ -17,8 +17,9 @@ function fa_tsp_chk()
     end
     sortedSol = sortrows(optSol,(N+1));
     best = sortedSol(1,:);
+
     avgTime = mean(timeArray(:,1))
-    avgDist = mean(optSol(:,N+1))
+    avgDist = mean(solArray(:,N+1))
     bestDist = best(N+1)
     bestGamma = best(N+2)
     stdDeviation = std(solArray(:,N+1))
@@ -70,13 +71,13 @@ global delta;
 global gamma;
 
 nFF = 50; %number of fireflies
-movements = 20; %number of times a firefly moves
+movements = 15; %number of times a firefly moves
 %gamma = 10; %light absorption coeffient
 alpha = 0;
 delta = 0;
-iterations = 15; %number of times the FFs will evolve
-file  = 'eil51.tsp'; %file name
-minDist = 426;
+iterations = 1500; %number of times the FFs will evolve
+file  = 'pr76.tsp'; %file name
+minDist = 108159;
 
 
 %**********     Read tsp file      **************

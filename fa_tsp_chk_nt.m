@@ -1,5 +1,5 @@
 function fa_tsp_chk_nt()
-    N = 76;
+    N = 100;
     runs = 20;
     solArray = zeros(runs,N+1);
     timeArray = zeros(runs,1);
@@ -11,10 +11,10 @@ function fa_tsp_chk_nt()
         timeArray(run,1) = time;
         errorArray(run,1) = error;
         diffArray(run,1) = diff;
+    run
     end
     sortedSol = sortrows(solArray,(N+1));
     best = sortedSol(1,:);
-
     avgTime = mean(timeArray(:,1))
     avgDist = mean(solArray(:,N+1))
     bestDist = best(N+1)
@@ -60,13 +60,13 @@ tic
 %****************inputs*******************
 
 clearvars -global;
-nFF = 50; %number of fireflies
+nFF = 70; %number of fireflies
 movements = 15; %number of times a firefly moves
 global gamma;
 gamma = 0.5; %light absorption coeffient
 iterations = 1500; %number of times the FFs will evolve
-file  = 'pr76.tsp'; %file name
-minDist = 108159;
+file  = 'kroA100.tsp'; %file name
+minDist = 21282;
 
 %*************** Initialize variables ****************
 
@@ -114,8 +114,8 @@ for iteration=1:iterations
 end
 time = toc
 
-figure
-plot (solutions);
+% figure
+% plot (solutions);
 
 disp('route');
 disp(best(1:N));

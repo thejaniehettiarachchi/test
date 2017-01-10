@@ -188,35 +188,24 @@ gamma = val;
 %********** Create Distance Matrix ****************
     function distMat = disMat(distMat, xValues, yValues, type)
         global N;
-%         if type == '2UD'
-%             for i = 1:N
-%                 for j = i:N
-%                     %enter distance between i and j into distMat
-%                     x1 = xValues(i); %x coodinate of c1
-%                     y1 = yValues(i); %y coodinate of c1
-%                     x2 = xValues(j); %x coodinate of c2
-%                     y2 = yValues(j); %y coodinate of c2
-% 
-%                     %calculate the distance between c1 and c2
-%                     %dist = sqrt(((x1-x2)^2) + ((y1-y2)^2));
-%                     X = [x1,y1;x2,y2];
-%                     dist = pdist(X,'euclidean');
-%                     distMat(i,j)= round(dist); %round off distance
-%                     distMat(j,i) = distMat(i,j);
-%                 end
-%             end
-%         else if type == 'Geo'
-                for n = 1:N*2
-                    getLL(n); %convert to longitude and latitude
-                end
+        if type == '2UD'
+        for i = 1:N
+            for j = i:N
+                %enter distance between i and j into distMat
+                x1 = xValues(i); %x coodinate of c1
+                y1 = yValues(i); %y coodinate of c1
+                x2 = xValues(j); %x coodinate of c2
+                y2 = yValues(j); %y coodinate of c2
 
-                for i = 1:N
-                    for j = i:N
-                        getDist(i,j);
-                    end
-                end
-%             end
-%         end
+                %calculate the distance between c1 and c2
+                %dist = sqrt(((x1-x2)^2) + ((y1-y2)^2));
+                X = [x1,y1;x2,y2];
+                dist = pdist(X,'euclidean');
+                distMat(i,j)= round(dist); %round off distance
+                distMat(j,i) = distMat(i,j);
+            end
+        end
+
 %********** Create Initial Population ****************
     function FFs = init(FF, nCity) %nFF = No. of FF, N = No. of cities
         FFs = zeros(FF,(nCity+2));

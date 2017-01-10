@@ -11,11 +11,11 @@ global delta;
 global gamma;
 
 nFF = 50; %number of fireflies
-movements = 30; %number of times a firefly moves
+movements = 15; %number of times a firefly moves
 %gamma = 10; %light absorption coeffient
 alpha = 0;
 delta = 0;
-iterations = 10; %number of times the FFs will evolve
+iterations = 1500; %number of times the FFs will evolve
 file  = 'pr76.tsp'; %file name
 minDist = 108159;
 
